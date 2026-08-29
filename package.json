@@ -1,0 +1,17 @@
+{
+  "name": "pi-theme-skyline",
+  "version": "1.0.0",
+  "description": "Soft blue skyline themed color scheme + appearance extension for pi",
+  "keywords": ["pi-package", "pi-theme", "theme", "skyline", "extension"],
+  "license": "MIT",
+  "files": ["themes", "extensions", "README.md", "LICENSE"],
+  "pi": {
+    "themes": ["./themes"],
+    "extensions": ["./extensions"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
+}
