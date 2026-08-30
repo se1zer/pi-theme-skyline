@@ -52,7 +52,7 @@ export default function (pi: ExtensionAPI) {
     footerDispose = undefined;
   });
 
-  pi.on("session_start", (_event, ctx) => {
+  pi.on("session_start", (event, ctx) => {
     if (ctx.mode !== "tui") return;
 
     // 0. 自动切换到 skyline 主题（立即生效 + 写入 settings.json）
@@ -62,7 +62,16 @@ export default function (pi: ExtensionAPI) {
     enableQuietStartup();
 
     // 2. header：动画 π logo + 版本号 + 每日鸡汤 + 模型/thinking + 资源统计
-    ctx.ui.setHeader(createHeader(ctx));
+    //    恢复历史会话时跳过启动动画，直接显示最终定格帧，避免打开会话时多次闪烁。
+    //    覆盖两种入口：/resume 等进程内切换（reason 为 resume/reload/fork），
+    //    以及 pi -r / pi -c 启动的已含历史消息的会话（reason 为 startup）。
+    const hasHistory = ctx.sessionManager.getEntries().some((e) => e.type === "message");
+    const skipAnimation =
+      event.reason === "resume" ||
+      event.reason === "reload" ||
+      event.reason === "fork" ||
+      hasHistory;
+    ctx.ui.setHeader(createHeader(ctx, skipAnimation));
 
     // 3. footer：三行 —— pwd+git / stats+model / context bar+clock
     const footer = createFooter(pi, ctx);
