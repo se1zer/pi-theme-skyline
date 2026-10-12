@@ -32,7 +32,17 @@ pi install git:github.com/se1zer/pi-theme-skyline
 
 ## 启用
 
-安装后在 pi 内输入 `/settings` 选择 `skyline` 主题，或在 `~/.pi/agent/settings.json` 中设置：
+安装后在 pi 内输入 `/settings` 选择主题，或在 `~/.pi/agent/settings.json` 中设置。
+
+推荐跟随终端外观自动切换（亮色终端用 skyline-light，暗色终端用 skyline）：
+
+```json
+{
+  "theme": "skyline-light/skyline"
+}
+```
+
+也可以固定使用暗色版：
 
 ```json
 {
