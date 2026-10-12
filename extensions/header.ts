@@ -261,17 +261,20 @@ class GgbondHeader {
     this.stats = computeStats(ctx);
     // 初始用内置鸡汤（同步，启动即显示）
     this.welcomeText = WELCOME_POOL[Math.floor(Math.random() * WELCOME_POOL.length)];
-    // 异步拉取接口鸡汤，成功则替换（失败保持内置）
-    void fetchHitokoto().then((text) => {
-      if (text) {
-        this.welcomeText = text;
-        this.tui.requestRender();
-      }
-    });
 
     if (skipAnimation) {
+      // 恢复历史会话：直接定格，不播放动画、也不异步拉取鸡汤，
+      // 避免 header 内容变化（长上下文时 header 在可视区上方）触发整屏清屏闪烁。
       this.frame = LAST_FRAME_INDEX;
     } else {
+      // 全新会话：异步拉取接口鸡汤，成功则替换（失败保持内置）
+      void fetchHitokoto().then((text) => {
+        if (text) {
+          this.welcomeText = text;
+          this.tui.requestRender();
+        }
+      });
+
       const interval = 50;
       const tick = () => {
         if (this.frame < LAST_FRAME_INDEX) {
@@ -329,7 +332,9 @@ class GgbondHeader {
   }
 }
 
-/** Create the header component factory. */
-export function createHeader(ctx: ExtensionContext) {
-  return (tui: TUI) => new GgbondHeader(ctx, tui, false);
+/** Create the header component factory.
+ * @param skipAnimation 为 true 时跳过启动动画，直接显示最终定格帧（用于恢复历史会话等场景，避免闪烁）。
+ */
+export function createHeader(ctx: ExtensionContext, skipAnimation = false) {
+  return (tui: TUI) => new GgbondHeader(ctx, tui, skipAnimation);
 }
