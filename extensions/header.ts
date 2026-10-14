@@ -310,8 +310,10 @@ class GgbondHeader {
     const welcome = theme.fg("accent", theme.bold(this.welcomeText));
     const modelLine = `🤖 ${muted(`${provider}${modelId}`)} · 🧠 ${muted(effort)}`;
     const statsLine = dim(`📦 ${plural(stats.skills, "skill")} · ${plural(stats.prompts, "prompt")} · ${plural(stats.extensions, "extension")} · ${plural(stats.themes, "theme")}`);
+    // 当前会话 ID（信息面板最下方一行，占用 logo 第 6 行右侧的空位，不增加 header 高度）
+    const sessionLine = dim(`🆔 ${this.ctx.sessionManager.getSessionId()}`);
 
-    const infoRows: Record<number, string> = { 2: piText, 3: welcome, 4: modelLine, 5: statsLine };
+    const infoRows: Record<number, string> = { 2: piText, 3: welcome, 4: modelLine, 5: statsLine, 6: sessionLine };
 
     const lines: string[] = [];
     for (let i = 0; i < logoLines.length; i++) {
